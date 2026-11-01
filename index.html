@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRPE | Inteligência de Compras</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f5f7fa;color:#182235}
+header{background:#101e38;color:white;padding:20px 6%}
+.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.logo{font-size:29px;font-weight:900;letter-spacing:2px}
+.logo span{color:#d5aa55}
+header p{font-size:12px;color:#c4cede;margin-top:4px}
+nav{display:flex;gap:17px;flex-wrap:wrap;margin-top:20px}
+nav a{color:white;text-decoration:none;font-size:13px}
+.hero{background:linear-gradient(120deg,#101e38,#203d67);color:white;padding:55px 7%}
+.hero h1{font-size:34px;max-width:600px;line-height:1.2}
+.hero p{margin:15px 0;color:#dce4ef;max-width:550px;line-height:1.6}
+.search{display:flex;max-width:650px;background:white;padding:6px;border-radius:9px;gap:5px}
+.search input{flex:1;min-width:0;border:0;padding:13px;outline:none;font-size:14px}
+button{cursor:pointer;border:0;border-radius:7px;padding:12px 17px;font-weight:bold}
+.primary{background:#d5aa55;color:#17243a}
+.section{padding:38px 6%}
+.section h2{font-size:23px;margin-bottom:8px}
+.sub{color:#68758a;font-size:14px;margin-bottom:22px}
+.modes{display:flex;gap:9px;margin:20px 0}
+.mode{background:white;border:1px solid #dce2eb;color:#26344b}
+.mode.active{background:#101e38;color:white}
+.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.category{background:white;border:1px solid #e3e8ef;padding:19px 12px;border-radius:10px;text-align:center;color:#17243a}
+.category strong{display:block;margin-top:9px;font-size:14px}
+.category span{font-size:27px}
+.category.active{border:2px solid #d5aa55;background:#fffaf0}
+.products{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.product{background:white;border:1px solid #e4e9f0;border-radius:11px;padding:17px}
+.product .emoji{font-size:37px;background:#f1f4f8;border-radius:8px;text-align:center;padding:20px;margin-bottom:14px}
+.tag{font-size:10px;color:#52647c;text-transform:uppercase;letter-spacing:1px}
+.product h3{font-size:16px;margin:8px 0}
+.product p{font-size:12px;color:#68758a;line-height:1.5;min-height:35px}
+.price{font-size:19px;font-weight:bold;margin:13px 0;color:#142747}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.actions button{font-size:11px;padding:10px}
+.compare{background:#101e38;color:white}
+.secondary{background:#edf1f6;color:#253650}
+.notice{background:#fff5df;color:#70551d;border:1px solid #f0dfb8;padding:12px;border-radius:8px;font-size:12px;margin-top:20px}
+.business{background:#eaf0f7;padding:30px 6%;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.business p{font-size:13px;color:#52647c;margin-top:8px}
+footer{background:#101e38;color:#dce4ef;padding:30px 6%;font-size:12px;line-height:1.8}
+footer strong{font-size:20px;color:white}
+#comparePanel{display:none;background:white;border:1px solid #dce2eb;padding:20px;border-radius:10px;margin-top:20px}
+#compareList{font-size:13px;line-height:2}
+.empty{text-align:center;color:#68758a;padding:30px;grid-column:1/-1}
+@media(max-width:700px){
+.hero h1{font-size:27px}
+.categories{grid-template-columns:repeat(2,1fr)}
+.products{grid-template-columns:repeat(2,1fr)}
+.section{padding:30px 5%}
+}
+@media(max-width:420px){
+.products{grid-template-columns:1fr}
+.search button{padding:10px}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="top">
+<div>
+<div class="logo">BRPE<span>.</span></div>
+<p>INTELIGÊNCIA DE COMPRAS</p>
+</div>
+<div style="font-size:12px;color:#dce4ef">Produtos • Fornecedores • Comparação</div>
+</div>
+<nav>
+<a href="#categorias">Categorias</a>
+<a href="#produtos">Produtos</a>
+<a href="#empresas">Para empresas</a>
+<a href="#sobre">Sobre a BRPE</a>
+</nav>
+</header>
+<section class="hero">
+<h1>Encontre produtos. Compare fornecedores. Compre melhor.</h1>
+<p>Uma plataforma para facilitar sua busca por produtos de higiene, limpeza, EPIs e ferramentas.</p>
+<div class="search">
+<input id="search" type="text" placeholder="O que você está procurando?">
+<button class="primary" onclick="searchProducts()">Pesquisar</button>
+</div>
+</section>
+<section class="section" id="categorias">
+<h2>Explore nossas categorias</h2>
+<p class="sub">Encontre o que precisa em diferentes segmentos.</p>
+<div class="categories">
+<button class="category active" onclick="filterCategory('Todos',this)"><span>🛍️</span><strong>Todos</strong></button>
+<button class="category" onclick="filterCategory('EPIs',this)"><span>🦺</span><strong>EPIs</strong></button>
+<button class="category" onclick="filterCategory('Higiene',this)"><span>🧴</span><strong>Higiene</strong></button>
+<button class="category" onclick="filterCategory('Limpeza',this)"><span>🧹</span><strong>Limpeza</strong></button>
+<button class="category" onclick="filterCategory('Ferramentas',this)"><span>🛠️</span><strong>Ferramentas</strong></button>
+</div>
+<div class="modes">
+<button class="mode active" onclick="setMode('Pessoa física',this)">Pessoa física</button>
+<button class="mode" onclick="setMode('Empresa',this)">Empresa</button>
+</div>
+<p id="modeText" class="sub">Encontre produtos para suas necessidades do dia a dia.</p>
+</section>
+<section class="section" id="produtos">
+<h2>Produtos em destaque</h2>
+<p class="sub">Conheça alguns exemplos do catálogo demonstrativo.</p>
+<div class="products" id="productList"></div>
+<div id="comparePanel">
+<h3>Minha comparação</h3>
+<div id="compareList"></div>
+<button class="secondary" onclick="clearCompare()">Limpar comparação</button>
+</div>
+<div class="notice">Os produtos e preços desta versão são apenas exemplos demonstrativos. Não representam ofertas ou disponibilidade confirmadas.</div>
+</section>
+<section class="business" id="empresas">
+<div>
+<h2>Soluções para empresas</h2>
+<p>Uma forma prática de organizar suas necessidades de compras.</p>
+</div>
+<button class="primary" onclick="businessMessage()">Solicitar cotação</button>
+</section>
+<section class="section" id="sobre">
+<h2>Sobre a BRPE</h2>
+<p class="sub">A BRPE nasce com a proposta de facilitar a descoberta e a comparação de produtos em diferentes segmentos, aproximando compradores e fornecedores.</p>
+</section>
+<footer>
+<strong>BRPE.</strong>
+<p>Inteligência de compras.</p>
+<p>Encontre produtos. Compare fornecedores. Compre melhor.</p>
+<p>© 2026 BRPE — Projeto em desenvolvimento.</p>
+</footer>
+</body>
+</html>
+
+<script>
+const products=[
+{id:1,name:"Protetor auditivo",cat:"EPIs",emoji:"🎧",desc:"Proteção individual para ambientes com ruído.",price:25.90},
+{id:2,name:"Luva de segurança",cat:"EPIs",emoji:"🧤",desc:"Proteção para as mãos.",price:18.50},
+{id:3,name:"Bota de segurança",cat:"EPIs",emoji:"🥾",desc:"Calçado de proteção profissional.",price:89.90},
+{id:4,name:"Sabonete líquido",cat:"Higiene",emoji:"🧴",desc:"Produto de higiene para uso cotidiano.",price:12.90},
+{id:5,name:"Papel toalha",cat:"Higiene",emoji:"🧻",desc:"Item para ambientes domésticos e comerciais.",price:19.90},
+{id:6,name:"Detergente",cat:"Limpeza",emoji:"🧼",desc:"Produto para limpeza de utensílios.",price:3.90},
+{id:7,name:"Desinfetante",cat:"Limpeza",emoji:"🫧",desc:"Produto para limpeza de ambientes.",price:8.90},
+{id:8,name:"Furadeira",cat:"Ferramentas",emoji:"🔩",desc:"Ferramenta elétrica para perfuração.",price:159.90},
+{id:9,name:"Jogo de chaves",cat:"Ferramentas",emoji:"🛠️",desc:"Conjunto de ferramentas manuais.",price:39.90}
+];
+
+let category="Todos";
+let mode="Pessoa física";
+let comparison=[];
+
+function render(list){
+const area=document.getElementById("productList");
+if(!list.length){
+area.innerHTML='<div class="empty">Nenhum produto encontrado.</div>';
+return;
+}
+area.innerHTML=list.map(p=>`
+<div class="product">
+<div class="emoji">${p.emoji}</div>
+<div class="tag">${p.cat}</div>
+<h3>${p.name}</h3>
+<p>${p.desc}</p>
+<div class="price">R$ ${p.price.toFixed(2).replace(".",",")}</div>
+<div class="actions">
+<button class="compare" onclick="addCompare(${p.id})">Comparar</button>
+<button class="secondary" onclick="productInfo(${p.id})">Detalhes</button>
+</div>
+</div>`).join("");
+}
+
+function filterCategory(cat,btn){
+category=cat;
+document.querySelectorAll(".category").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+searchProducts();
+}
+
+function searchProducts(){
+const term=document.getElementById("search").value.toLowerCase();
+const list=products.filter(p=>
+(category==="Todos"||p.cat===category)&&
+(p.name.toLowerCase().includes(term)||
+p.cat.toLowerCase().includes(term)||
+p.desc.toLowerCase().includes(term))
+);
+render(list);
+}
+
+function setMode(value,btn){
+mode=value;
+document.querySelectorAll(".mode").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+document.getElementById("modeText").textContent=
+value==="Empresa"
+?"Encontre produtos para as necessidades da sua empresa."
+:"Encontre produtos para suas necessidades do dia a dia.";
+}
+
+function addCompare(id){
+const p=products.find(x=>x.id===id);
+if(comparison.some(x=>x.id===id)){
+alert("Esse produto já está na comparação.");
+return;
+}
+comparison.push(p);
+document.getElementById("comparePanel").style.display="block";
+updateCompare();
+}
+
+function updateCompare(){
+document.getElementById("compareList").innerHTML=
+comparison.map(p=>
+`${p.emoji} <strong>${p.name}</strong> — R$ ${p.price.toFixed(2).replace(".",",")} (demonstrativo)`
+).join("<br>");
+}
+
+function clearCompare(){
+comparison=[];
+document.getElementById("comparePanel").style.display="none";
+}
+
+function productInfo(id){
+const p=products.find(x=>x.id===id);
+alert(p.name+"\nCategoria: "+p.cat+"\n"+p.desc+"\nPreço demonstrativo: R$ "+p.price.toFixed(2).replace(".",","));
+}
+
+function businessMessage(){
+alert("A área de cotação empresarial da BRPE está em desenvolvimento. Em breve você poderá solicitar uma cotação.");
+}
+
+render(products);
+</script>
+</body>
+</html>
